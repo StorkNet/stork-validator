@@ -303,9 +303,7 @@ contract ZKTransaction {
 }
 
 contract StorkDataStore is StorkTypes {
-    function setStorkBlockGeneratorAddress(address _storkBlockGeneratorAddress)
-        external
-    {}
+    function setStorkBlockGeneratorAddress(address _storkBlockGeneratorAddress) external {}
 
     function createNewPhalanx(
         address _addr,
@@ -378,15 +376,9 @@ contract StorkBlockGenerator is StorkBlock {
         if (blockTxAddDuration <= block.timestamp) {
             addTxToBlock();
         } else {
-            key = _key;
+            key += _key;
             bytes32 txHashed = keccak256(
-                abi.encode(
-                    _clientAddr,
-                    _queryName,
-                    _storkId,
-                    _txStork,
-                    _txStorkParameter
-                )
+                abi.encode(_clientAddr, _queryName, _storkId, _txStork, _txStorkParameter)
             );
 
             // if the txHash doesn't exist, add it to the TxList and increase the txCount of the client
@@ -395,8 +387,7 @@ contract StorkBlockGenerator is StorkBlock {
                     clientCounter[_clientAddr].isAdded = true;
                     clients.push(_clientAddr);
                 }
-                clientCounter[_clientAddr].txCount += queryInfo[_queryName]
-                    .cost;
+                clientCounter[_clientAddr].txCount += queryInfo[_queryName].cost;
                 txData[txHashed].isProposed = true;
                 txData[txHashed].client = _clientAddr;
                 txHashes.push(txHashed);
@@ -426,16 +417,12 @@ contract StorkBlockGenerator is StorkBlock {
 
     function addTxToBlock() public isNotSealed {
         blocks[blockCount].isSealed = true;
-        uint8 validationsRequired = uint8(
-            (validators.length * percentageToPass) / 100
-        );
+        uint8 validationsRequired = uint8((validators.length * percentageToPass) / 100);
         for (uint8 i = 0; i < txCount; ++i) {
             if (txData[txHashes[i]].validators.length >= validationsRequired) {
                 blocks[blockCount].txHash.push(txHashes[i]);
                 if (isClientAddedToBlock[txData[txHashes[i]].client] == false) {
-                    blocks[blockCount].contracts.push(
-                        txData[txHashes[i]].client
-                    );
+                    blocks[blockCount].contracts.push(txData[txHashes[i]].client);
                     blocks[blockCount].contractsTxCounts.push(
                         clientCounter[txData[txHashes[i]].client].txCount
                     );
@@ -443,20 +430,15 @@ contract StorkBlockGenerator is StorkBlock {
                 }
                 blocks[blockCount].minConfirmations = validationsRequired;
 
-                if (
-                    txData[txHashes[i]].queryName ==
-                    queryInfo["createPhalanxType"].queryHash
-                ) {
+                if (txData[txHashes[i]].queryName == queryInfo["createPhalanxType"].queryHash) {
                     dataStore.createNewPhalanx(
                         txData[txHashes[i]].client,
                         txData[txHashes[i]].phalanxName,
                         txData[txHashes[i]].stork
                     );
                 } else if (
-                    txData[txHashes[i]].queryName ==
-                    queryInfo["createStork"].queryHash ||
-                    txData[txHashes[i]].queryName ==
-                    queryInfo["updateStorkById"].queryHash
+                    txData[txHashes[i]].queryName == queryInfo["createStork"].queryHash ||
+                    txData[txHashes[i]].queryName == queryInfo["updateStorkById"].queryHash
                 ) {
                     dataStore.createNewData(
                         txData[txHashes[i]].client,
@@ -465,8 +447,7 @@ contract StorkBlockGenerator is StorkBlock {
                         txData[txHashes[i]].stork
                     );
                 } else if (
-                    txData[txHashes[i]].queryName ==
-                    queryInfo["deleteStorkById"].queryHash
+                    txData[txHashes[i]].queryName == queryInfo["deleteStorkById"].queryHash
                 ) {
                     dataStore.deleteData(
                         txData[txHashes[i]].client,
@@ -479,9 +460,7 @@ contract StorkBlockGenerator is StorkBlock {
 
         for (uint8 i; i < validators.length; ++i) {
             blocks[blockCount].validators.push(validators[i]);
-            blocks[blockCount].validatorsTxCounts.push(
-                validatorInfo[validators[i]].txCount
-            );
+            blocks[blockCount].validatorsTxCounts.push(validatorInfo[validators[i]].txCount);
         }
 
         PoSt.startPoSt(key, validationsRequired, validators);
@@ -489,19 +468,12 @@ contract StorkBlockGenerator is StorkBlock {
         PoSt.startPoSt(key, 1, validators);
         blocks[blockCount].blockMiner = PoSt.getBlockValidators()[0];
 
-        zkTx.startPoSt(
-            key,
-            uint8(blocks[blockCount].txHash.length),
-            validators
-        );
+        zkTx.startPoSt(key, uint8(blocks[blockCount].txHash.length), validators);
         zkTx.generateZKTxs(blocks[blockCount].txHash);
         blocks[blockCount].txHash = zkTx.getZkTxs();
 
         blockHashes[blockCount] = keccak256(
-            abi.encode(
-                blocks[blockCount].blockMiner,
-                abi.encode(blocks[blockCount])
-            )
+            abi.encode(blocks[blockCount].blockMiner, abi.encode(blocks[blockCount]))
         );
 
         announceNewBlock(blockCount);
