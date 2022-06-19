@@ -32,7 +32,7 @@ const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY || "Your polygonscan
 const REPORT_GAS = process.env.REPORT_GAS || false
 
 module.exports = {
-  defaultNetwork: "hardhat",
+  defaultNetwork: "l1",
   networks: {
     hardhat: {
       // If you want to do some forking set `enabled` to true
@@ -43,8 +43,15 @@ module.exports = {
       },
       chainId: 31337,
     },
-    localhost: {
-      chainId: 31337,
+    l1: {
+      url: process.env.GETH_L1_URL || "",
+      accounts:
+        process.env.PRIVATE_KEY_OWNER !== undefined ? [process.env.PRIVATE_KEY_OWNER] : [],
+    },
+    storknet: {
+      url: process.env.STORKNET_URL || "",
+      accounts:
+        process.env.PRIVATE_KEY_OWNER !== undefined ? [process.env.PRIVATE_KEY_OWNER] : [],
     },
     kovan: {
       url: KOVAN_RPC_URL,
@@ -95,29 +102,14 @@ module.exports = {
     noColors: true,
     // coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },
-  contractSizer: {
-    runOnCompile: false,
-    only: ["APIConsumer", "KeepersCounter", "PriceConsumerV3", "RandomNumberConsumerV2"],
-  },
-  namedAccounts: {
-    deployer: {
-      default: 0, // here this will by default take the first account as deployer
-      1: 0, // similarly on mainnet it will take the first account as deployer. Note though that depending on how hardhat network are configured, the account 0 on one network can be different than on another
-    },
-    feeCollector: {
-      default: 1,
-    },
-  },
   solidity: {
     compilers: [
       {
         version: "0.8.7",
-      },
-      {
-        version: "0.6.6",
-      },
-      {
-        version: "0.4.24",
+        settings: {
+          optimizer: { enabled: true },
+        },
+
       },
     ],
   },
