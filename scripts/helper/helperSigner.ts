@@ -60,7 +60,33 @@ export function getSigner(signerId: string): string[] {
   ];
 }
 
-export function getWallet() {
+export function getL1Wallet(): ethers.Wallet {
+  const providerRPC = {
+    l1: {
+      name: "l1" || "",
+      rpc: process.env.GETH_L1_URL || "",
+      chainId: 1337,
+    },
+  };
+
+  const provider = new ethers.providers.StaticJsonRpcProvider(
+    providerRPC.l1.rpc,
+    {
+      chainId: providerRPC.l1.chainId,
+      name: providerRPC.l1.name,
+    }
+  );
+
+  const accountFrom = {
+    privateKey: process.env.PRIVATE_KEY_OWNER || "",
+  };
+
+  const wallet = new ethers.Wallet(accountFrom.privateKey, provider);
+
+  return wallet;
+}
+
+export function getStorknetWallet(): ethers.Wallet {
   const providerRPC = {
     storknet: {
       name: "storknet" || "",

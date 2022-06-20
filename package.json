@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build" : "hardhat clean && hardhat compile",
+    "build": "hardhat clean && hardhat compile",
+    "listenRequestById": "hardhat run scripts/L1/listenRequestById.ts --network l1",
+    "listenCreateStork": "hardhat run scripts/L1/listenCreateStork.ts --network l1",
+    "listenRequestValidator": "hardhat run scripts/L2/listenRequestValidator.ts --network storknet",
+    "listenNewBlock": "hardhat run scripts/L2/listenNewBlock.ts --network storknet",
     "compile": "hardhat compile",
     "test": "hardhat test test/unit/*_test.js --network hardhat",
     "test-staging": "hardhat test test/staging/*_test.js --network rinkeby",

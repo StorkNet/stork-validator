@@ -5,38 +5,34 @@ import { Contract, ethers, Wallet } from "ethers";
 import { getContract } from "../helper/helperContractAddress";
 import { getStorknetWallet } from "../helper/helperSigner";
 
-export function ProposeTx(
-  clientAddr: string,
-  queryName: string,
+export function ResolveRequest(
+  reqId: number,
+  clientAddress: string,
   phalanxName: string,
-  storkId: number,
-  txStork: string,
-  txStorkParameter: string,
+  key: number,
   fallbackFunction: string,
-  key: number
+  arrayOfIds: any
 ) {
   const wallet: Wallet = getStorknetWallet();
 
-  const CONTRACT_ADDRESS: string = getContract("StorkBlockGenerator");
+  const CONTRACT_ADDRESS: string = getContract("StorkRequestHandler");
 
   const contract: Contract = new ethers.Contract(
     CONTRACT_ADDRESS,
     [
-      "function proposeTxForBlock(address _clientAddr, string calldata _queryName, bytes32 _phalanxName, uint8 _storkId, bytes calldata _txStork, bytes calldata _txStorkParameter, string calldata _fallbackFunction, uint256 _key) external",
+      "function startPoStForRequest(uint256 _reqId, address _client, bytes32 _phalanxName, uint256 _key, string calldata _fallbackFunction, uint8[] calldata _ids) external",
     ],
     wallet
   );
 
   contract
-    .proposeTxForBlock(
-      clientAddr,
-      queryName,
+    .startPoStForRequest(
+      reqId,
+      clientAddress,
       ethers.utils.keccak256(ethers.utils.toUtf8Bytes(phalanxName)),
-      storkId,
-      txStork,
-      txStorkParameter,
+      key,
       fallbackFunction,
-      key
+      arrayOfIds,
     )
     .then((tx: any) => {
       console.log("Transaction hash:", tx.hash);
