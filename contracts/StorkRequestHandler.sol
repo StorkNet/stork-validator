@@ -14,10 +14,11 @@ contract StorkRequestHandler {
         address client;
         address[] validators;
         address miner;
-        uint8 ids;
+        uint8[] ids;
         uint256 key;
+        string fallbackFunction;
         uint256 startTimeStamp;
-        bytes32 storkName;
+        bytes32 phalanxName;
         bool complete;
     }
 
@@ -36,9 +37,10 @@ contract StorkRequestHandler {
     function startPoStForRequest(
         uint256 _reqId,
         address _client,
-        bytes32 _storkName,
+        bytes32 _phalanxName,
         uint256 _key,
-        uint8 _ids
+        string calldata _fallbackFunction,
+        uint8[] calldata _ids
     ) external {
         if (!isRequestExist[_reqId]) {
             isRequestExist[_reqId] = true;
@@ -48,15 +50,14 @@ contract StorkRequestHandler {
                 address(0),
                 _ids,
                 _key,
+                _fallbackFunction,
                 block.timestamp,
-                _storkName,
+                _phalanxName,
                 false
             );
         }
 
-        if (
-            block.timestamp < requests[_reqId].startTimeStamp + closeTimeStamp
-        ) {
+        if (block.timestamp < requests[_reqId].startTimeStamp + closeTimeStamp) {
             require(!validatorExist[_reqId][msg.sender], "ReqHandler- validator on job");
             validatorExist[_reqId][msg.sender] = true;
             requests[_reqId].validators.push(msg.sender);
@@ -69,13 +70,13 @@ contract StorkRequestHandler {
     function completeRequest(uint256 _reqId) public {
         requests[_reqId].complete = true;
         address _client = requests[_reqId].client;
-        bytes32 _storkName = requests[_reqId].storkName;
-        uint8 _ids = requests[_reqId].ids;
+        bytes32 _phalanxName = requests[_reqId].phalanxName;
+        uint8[] memory _ids = requests[_reqId].ids;
         uint256 _key = requests[_reqId].key;
 
         bytes memory data;
 
-        data = storkDataStore.readData(_client, _storkName, _ids);
+        data = storkDataStore.readData(_client, _phalanxName, _ids[0]);
 
         requests[_reqId].miner = requests[_reqId].validators[
             _key % requests[_reqId].validators.length
@@ -83,6 +84,7 @@ contract StorkRequestHandler {
         emit RequestValidator(
             _reqId,
             requests[_reqId].miner,
+            requests[_reqId].fallbackFunction,
             keccak256(abi.encode(data, _key, requests[_reqId].miner)),
             data
         );
@@ -96,6 +98,7 @@ contract StorkRequestHandler {
     event RequestValidator(
         uint256 indexed _reqId,
         address miner,
+        string _fallbackFunction,
         bytes32 zkChallenge,
         bytes data
     );
