@@ -3,7 +3,7 @@
 import { Contract, ethers, Wallet } from "ethers";
 
 import { getContract } from "../helper/helperContractAddress";
-import { getWallet } from "../helper/helperSigner";
+import { getStorknetWallet } from "../helper/helperSigner";
 
 export function ResolveRequest(
   reqId: number,
@@ -13,7 +13,7 @@ export function ResolveRequest(
   fallbackFunction: string,
   arrayOfIds: any
 ) {
-  const wallet: Wallet = getWallet();
+  const wallet: Wallet = getStorknetWallet();
 
   const CONTRACT_ADDRESS: string = getContract("StorkRequestHandler");
 
