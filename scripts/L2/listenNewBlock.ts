@@ -28,7 +28,6 @@ function eventListener() {
             console.log(
               `\n[+]New Block with transaction ${events[i].transactionHash} at block number ${events[i].blockNumber}\n${events[i].returnValues._blockNumber} - ${events[i].returnValues._blockHash} - ${events[i].returnValues._blockMiner} \n${events[i].returnValues._validators} \n${events[i].returnValues._blockData}`
             );
-            // console.log("\n[+]Proposing transaction...");
           }
           _fromBlock = events[events.length - 1].blockNumber + 1;
         }
