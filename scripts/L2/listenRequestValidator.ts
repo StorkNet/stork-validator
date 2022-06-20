@@ -35,6 +35,7 @@ function eventListener() {
                 events[i].returnValues._client,
                 events[i].returnValues._fallbackFunction,
                 events[i].returnValues._data,
+                events[i].returnValues._ids,
                 events[i].returnValues._zkChallenge);
             }
           }

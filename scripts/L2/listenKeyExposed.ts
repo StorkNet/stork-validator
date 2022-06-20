@@ -23,6 +23,7 @@ export function eventListenerKeyExposed(
     client: string,
     fallbackFunction: string,
     data: string,
+    ids: number,
     zkChallenge: string
 ): void {
     let key: number = 0;
@@ -46,6 +47,7 @@ export function eventListenerKeyExposed(
                                 client,
                                 fallbackFunction,
                                 data,
+                                ids,
                                 zkChallenge,
                                 key);
                         }

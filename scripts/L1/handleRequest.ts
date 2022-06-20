@@ -10,6 +10,7 @@ export function HandleRequest(
   clientAddress: string,
   fallbackFunction: string,
   data: string,
+  ids: number,
   zkProof: string,
   key: number,
 ) {
@@ -21,7 +22,7 @@ export function HandleRequest(
   const contract: Contract = new ethers.Contract(
     CONTRACT_ADDRESS,
     [
-      "function supplyRequestData(uint256 _reqId, address _addr, string calldata _fallback, bytes calldata _data, bytes32 zkProof, uint256 _key) external",
+      "function supplyRequestData(uint256 _reqId, address _addr, string calldata _fallback, bytes calldata _data, uint8 _storkId ,bytes32 zkProof, uint256 _key) external",
     ],
     L1wallet
   );
@@ -32,6 +33,7 @@ export function HandleRequest(
       clientAddress,
       fallbackFunction,
       data,
+      ids,
       zkProof,
       key,
     )
@@ -42,5 +44,3 @@ export function HandleRequest(
       console.log("Error:", error);
     });
 }
-
-HandleRequest(0, "0xF26200BEF0E10501B89AF5210eCA8cD4b2a170fF", "receiveData(bytes)", "0xdccbe5d665358dad8beba1e47ef92e35643e58fa96c6b1c61b2f0c710fe0dc6d", "0x1fd35d2f29adf658eaff86211e4cb063769c61757af01ef6bd7a9c650723d3dd", 126);

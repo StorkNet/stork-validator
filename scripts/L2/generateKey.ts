@@ -12,6 +12,7 @@ export async function GenerateKey(
   client: string,
   fallbackFunction: string,
   data: string,
+  ids: number,
   zkChallenge: string
 ) {
   const wallet: Wallet = getStorknetWallet();
@@ -37,6 +38,7 @@ export async function GenerateKey(
         client,
         fallbackFunction,
         data,
+        ids,
         zkChallenge
       );
     })
