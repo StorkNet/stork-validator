@@ -8,9 +8,9 @@ const Web3 = require("web3");
 const API_URL = process.env.GETH_L1_URL;
 const web3 = new Web3(API_URL);
 
-const CONTRACT_ADDRESS = getContract("StorkQueries");
+const CONTRACT_ADDRESS = getContract("StorkQuery");
 
-const contract = require("../../artifacts/contracts/StorkQuery.sol/StorkQueries.json");
+const contract = require("../../artifacts/contracts/StorkQuery.sol/StorkQuery.json");
 const StorkQuery = new web3.eth.Contract(contract.abi, CONTRACT_ADDRESS);
 
 let _fromBlock: number = 0;
