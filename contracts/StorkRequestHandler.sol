@@ -87,6 +87,7 @@ contract StorkRequestHandler {
             requests[_reqId].client,
             requests[_reqId].fallbackFunction,
             keccak256(abi.encode(data, _key, requests[_reqId].miner)),
+            requests[_reqId].ids[0],
             data
         );
     }
@@ -102,6 +103,7 @@ contract StorkRequestHandler {
         address _client,
         string _fallbackFunction,
         bytes32 _zkChallenge,
+        uint8 _ids,
         bytes _data
     );
 
