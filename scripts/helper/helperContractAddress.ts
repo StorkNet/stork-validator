@@ -8,6 +8,8 @@ export function getContract(contractName: string): string {
       return process.env.CONTRACT_ADDRESS_STORKBLOCKGENERATOR || "";
     case "StorkRequestHandler":
       return process.env.CONTRACT_ADDRESS_STORKREQUESTHANDLER || "";
+    case "MultiSigVerification" :
+      return process.env.CONTRACT_ADDRESS_MULTISIGVERIFICATION || "";
     default:
       return "";
   }
