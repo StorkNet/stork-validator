@@ -3,13 +3,18 @@
 import { Contract, ethers, Wallet } from "ethers";
 
 import { getContract } from "../helper/helperContractAddress";
-import { getWallet } from "../helper/helperSigner";
+import { getStorknetWallet } from "../helper/helperSigner";
+import { eventListenerKeyExposed } from "./listenKeyExposed";
 
 
-export function GenerateKey(
+export async function GenerateKey(
   reqId: number,
+  client: string,
+  fallbackFunction: string,
+  data: string,
+  zkChallenge: string
 ) {
-  const wallet: Wallet = getWallet();
+  const wallet: Wallet = getStorknetWallet();
 
   const CONTRACT_ADDRESS: string = getContract("StorkRequestHandler");
 
@@ -27,7 +32,13 @@ export function GenerateKey(
     )
     .then((tx: any) => {
       console.log("Transaction hash:", tx.hash);
-      //push tx to l1
+      eventListenerKeyExposed(
+        reqId,
+        client,
+        fallbackFunction,
+        data,
+        zkChallenge
+      );
     })
     .catch((error: any) => {
       console.log("Error:", error);
