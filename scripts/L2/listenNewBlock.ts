@@ -10,13 +10,13 @@ const web3 = new Web3(API_URL);
 const CONTRACT_ADDRESS = getContract("StorkBlockGenerator");
 
 const contract = require("../../artifacts/contracts/StorkBlockGenerator.sol/StorkBlockGenerator.json");
-const StorkQuery = new web3.eth.Contract(contract.abi, CONTRACT_ADDRESS);
+const StorkBlockGenerator = new web3.eth.Contract(contract.abi, CONTRACT_ADDRESS);
 
 let _fromBlock: number = 0;
 const listenEvent: string = "NewBlock";
 
 function eventListener() {
-  StorkQuery.getPastEvents(
+  StorkBlockGenerator.getPastEvents(
     listenEvent,
     {
       fromBlock: "latest",
