@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // File: contracts/StorkTypes.sol
 
-
 pragma solidity ^0.8.0;
 
 /// @custom: Data Control Contract is called DCC
@@ -69,7 +68,6 @@ contract StorkTypes {
     /// @dev Maps the data type name to a Phalanx type object
     mapping(string => Phalanx) public phalanxInfo;
 
-
     /// @notice Counts the number of Phalanx types
     /// @dev Used to keep track of the number of Phalanx types
     uint8 public storkTypeCount;
@@ -78,17 +76,15 @@ contract StorkTypes {
     /// @dev Used to check if a Phalanx type exists
     mapping(string => bool) public phalanxExists;
 }
-// File: contracts/StorkQueries.sol
-
+// File: contracts/StorkQuery.sol
 
 pragma solidity ^0.8.0;
-
 
 /// @title Stork Handler Contract
 /// @author Shankar "theblushirtdude" Subramanian
 /// @notice Used to connect a StorkContract to StorkNet
 /// @dev
-contract StorkQueries is StorkTypes {
+contract StorkQuery is StorkTypes {
     modifier isStorkClient() {
         // (bool succ, bytes memory val) = storkFundAddr.staticcall(
         //     abi.encodeWithSignature("isStorkClient(address)", msg.sender)
@@ -99,6 +95,7 @@ contract StorkQueries is StorkTypes {
     }
 
     address public immutable storkFundAddr;
+    uint256 internal reqId;
 
     constructor(address _storkFundAddr) {
         storkFundAddr = _storkFundAddr;
@@ -216,10 +213,10 @@ contract StorkQueries is StorkTypes {
     /// @dev The event emitted tells StorkNet about the data being stored, it's type, and the contract associated
     /// @param _phalanxName The StorkDataType
     /// @param _storkId The index to delete
-    function deleteStorkById(
-        string memory _phalanxName,
-        uint32[] memory _storkId
-    ) external isStorkClient {
+    function deleteStorkById(string memory _phalanxName, uint32[] memory _storkId)
+        external
+        isStorkClient
+    {
         emit EventStorkDeleteById(msg.sender, _phalanxName, _storkId);
     }
 
@@ -227,15 +224,11 @@ contract StorkQueries is StorkTypes {
     /// @dev The event emitted tells StorkNet about the data being stored, it's type, and the contract associated
     /// @param _phalanxName The StorkDataType
     /// @param _storkParam The index to delete
-    function deleteStorkByParam(
-        string memory _phalanxName,
-        StorkParameter[] memory _storkParam
-    ) external isStorkClient {
-        emit EventStorkDeleteByParams(
-            msg.sender,
-            _phalanxName,
-            abi.encode(_storkParam)
-        );
+    function deleteStorkByParam(string memory _phalanxName, StorkParameter[] memory _storkParam)
+        external
+        isStorkClient
+    {
+        emit EventStorkDeleteByParams(msg.sender, _phalanxName, abi.encode(_storkParam));
     }
 
     /// @notice Lets StorkNet know that this contract has a new Store request
@@ -269,12 +262,7 @@ contract StorkQueries is StorkTypes {
         uint32[] memory _arrayOfIds,
         string memory _fallbackFunction
     ) external isStorkClient {
-        emit EventStorkRequestId(
-            msg.sender,
-            _phalanxName,
-            _arrayOfIds,
-            _fallbackFunction
-        );
+        emit EventStorkRequestId(msg.sender, _phalanxName, _arrayOfIds, _fallbackFunction, reqId++);
     }
 
     /// @notice Stores the StorkDataType in the StorkNet
@@ -304,12 +292,7 @@ contract StorkQueries is StorkTypes {
         uint32[] memory _storkIdRange,
         string memory _fallbackFunction
     ) external isStorkClient {
-        emit EventStorkRequestByRange(
-            msg.sender,
-            _phalanxName,
-            _storkIdRange,
-            _fallbackFunction
-        );
+        emit EventStorkRequestByRange(msg.sender, _phalanxName, _storkIdRange, _fallbackFunction);
     }
 
     /// @notice Lets StorkNet know that this contract has a new Store request
@@ -320,7 +303,8 @@ contract StorkQueries is StorkTypes {
         address indexed _clientAddress,
         string _phalanxName,
         uint32[] _arrayOfIds,
-        string _fallbackFunction
+        string _fallbackFunction,
+        uint256 _reqId
     );
 
     /// @notice Lets StorkNet know that this contract has a new Store request
