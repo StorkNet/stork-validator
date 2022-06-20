@@ -84,6 +84,7 @@ contract StorkRequestHandler {
         emit RequestValidator(
             _reqId,
             requests[_reqId].miner,
+            requests[_reqId].client,
             requests[_reqId].fallbackFunction,
             keccak256(abi.encode(data, _key, requests[_reqId].miner)),
             data
@@ -97,10 +98,11 @@ contract StorkRequestHandler {
 
     event RequestValidator(
         uint256 indexed _reqId,
-        address miner,
+        address _miner,
+        address _client,
         string _fallbackFunction,
-        bytes32 zkChallenge,
-        bytes data
+        bytes32 _zkChallenge,
+        bytes _data
     );
 
     event KeyExposed(uint256 indexed _reqId, uint256 key);
