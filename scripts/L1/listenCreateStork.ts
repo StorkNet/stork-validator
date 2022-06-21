@@ -49,7 +49,7 @@ function eventListener() {
               " ",
               events[i].returnValues._stork,
               " 0x0000000000000000000000000000000000000000000000000000000000000000 ",
-              " null ",
+              "null",
               Math.floor(Math.random() * 100)
             );
           }
