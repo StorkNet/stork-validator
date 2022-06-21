@@ -232,20 +232,20 @@ contract StorkQuery is StorkTypes {
     }
 
     /// @notice Lets StorkNet know that this contract has a new Store request
-    /// @param _storkName The data type name keccak256-ed because that's how events work
+    /// @param _phalanxName The data type name keccak256-ed because that's how events work
     /// @param _storkId The index to delete
     event EventStorkDeleteById(
         address indexed _clientAddress,
-        string _storkName,
+        string _phalanxName,
         uint32[] _storkId
     );
 
     /// @notice Lets StorkNet know that this contract has a new Store request
-    /// @param _storkName The data type name keccak256-ed because that's how events work
+    /// @param _phalanxName The data type name keccak256-ed because that's how events work
     /// @param _storkParam The index to delete
     event EventStorkDeleteByParams(
         address indexed _clientAddress,
-        string _storkName,
+        string _phalanxName,
         bytes _storkParam
     );
 
