@@ -14,7 +14,7 @@ const contract = require("../../artifacts/contracts/StorkQuery.sol/StorkQuery.js
 const StorkQuery = new web3.eth.Contract(contract.abi, CONTRACT_ADDRESS);
 
 let _fromBlock: number = 0;
-const listenEvent: string = "EventUpdateStorkById";
+const listenEvent: string = "EventStorkUpdateById";
 
 function eventListener() {
   StorkQuery.getPastEvents(
@@ -32,13 +32,13 @@ function eventListener() {
             console.log("\n[+]Proposing transaction...");
             ProposeTx(
               events[i].returnValues._clientAddress,
-              "storkCreate",
+              "updateStorkById",
               events[i].returnValues._phalanxName,
               events[i].returnValues._storkId,
               events[i].returnValues._stork,
               "0x0000000000000000000000000000000000000000000000000000000000000000",
-              "",
-              Math.floor(Math.random() * 1000)
+              "null",
+              Math.floor(Math.random() * 100)
             );
           }
           _fromBlock = events[events.length - 1].blockNumber + 1;
