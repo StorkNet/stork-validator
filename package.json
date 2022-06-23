@@ -4,8 +4,10 @@
   "description": "",
   "scripts": {
     "build": "hardhat clean && hardhat compile",
-    "listenRequestById": "hardhat run scripts/L1/listenRequestById.ts --network l1",
     "listenCreateStork": "hardhat run scripts/L1/listenCreateStork.ts --network l1",
+    "listenRequestById": "hardhat run scripts/L1/listenRequestById.ts --network l1",
+    "listenUpdateById": "hardhat run scripts/L1/listenUpdateById.ts --network l1",
+    "listenDeleteById": "hardhat run scripts/L1/listenDeleteById.ts --network l1",
     "listenRequestValidator": "hardhat run scripts/L2/listenRequestValidator.ts --network storknet",
     "listenNewBlock": "hardhat run scripts/L2/listenNewBlock.ts --network storknet",
     "compile": "hardhat compile",
