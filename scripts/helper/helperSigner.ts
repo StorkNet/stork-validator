@@ -1,79 +1,24 @@
 import { ethers } from "ethers";
 require("dotenv").config();
 
-export function getSignerHardhat(
-  signerId: string
-): ethers.providers.JsonRpcSigner {
-  const provider = new ethers.providers.JsonRpcProvider(
-    "http://localhost:8545"
-  );
-  switch (signerId) {
-    case "owner":
-      return provider.getSigner(0);
-    case "client":
-      return provider.getSigner(1);
-    case "1":
-      return provider.getSigner(2);
-    case "2":
-      return provider.getSigner(3);
-    case "3":
-      return provider.getSigner(4);
-    case "4":
-      return provider.getSigner(5);
-    case "5":
-      return provider.getSigner(6);
-  }
-
-  return provider.getSigner(0);
+export function getWallet(networkName: string): ethers.Wallet {
+  return generateWallet(networkName);
 }
 
-export function getSigner(signerId: string): string[] {
-  switch (signerId) {
-    case "rinkeby":
-      return [process.env.PUBLIC_KEY || "", process.env.PRIVATE_KEY || ""];
-
-    case "owner":
-      return [
-        process.env.PUBLIC_KEY_OWNER || "",
-        process.env.PRIVATE_KEY_OWNER || "",
-      ];
-    case "client":
-      return [
-        process.env.PUBLIC_KEY_CLIENT || "",
-        process.env.PRIVATE_KEY_CLIENT || "",
-      ];
-    case "1":
-      return [process.env.PUBLIC_KEY_1 || "", process.env.PRIVATE_KEY_1 || ""];
-    case "2":
-      return [process.env.PUBLIC_KEY_2 || "", process.env.PRIVATE_KEY_2 || ""];
-    case "3":
-      return [process.env.PUBLIC_KEY_3 || "", process.env.PRIVATE_KEY_3 || ""];
-    case "4":
-      return [process.env.PUBLIC_KEY_4 || "", process.env.PRIVATE_KEY_4 || ""];
-    case "5":
-      return [process.env.PUBLIC_KEY_5 || "", process.env.PRIVATE_KEY_5 || ""];
-  }
-
-  return [
-    process.env.PUBLIC_KEY_CLIENT || "",
-    process.env.PRIVATE_KEY_CLIENT || "",
-  ];
-}
-
-export function getL1Wallet(): ethers.Wallet {
+function generateWallet(networkName: string): ethers.Wallet {
   const providerRPC = {
-    l1: {
-      name: "l1" || "",
-      rpc: process.env.GETH_L1_URL || "",
-      chainId: 1337,
+    network: {
+      name: networkName,
+      rpc: getRPC(networkName),
+      chainId: getChainId(networkName),
     },
   };
 
   const provider = new ethers.providers.StaticJsonRpcProvider(
-    providerRPC.l1.rpc,
+    providerRPC.network.rpc,
     {
-      chainId: providerRPC.l1.chainId,
-      name: providerRPC.l1.name,
+      chainId: providerRPC.network.chainId,
+      name: providerRPC.network.name,
     }
   );
 
@@ -86,28 +31,28 @@ export function getL1Wallet(): ethers.Wallet {
   return wallet;
 }
 
-export function getStorknetWallet(): ethers.Wallet {
-  const providerRPC = {
-    storknet: {
-      name: "storknet" || "",
-      rpc: process.env.STORKNET_URL || "",
-      chainId: 1337,
-    },
-  };
+function getRPC(networkName: string) {
+  switch (networkName) {
+    case "l1":
+      return process.env.GETH_L1_URL;
+    case "storknet":
+      return process.env.STORKNET_URL;
+    case "l1-test":
+      return process.env.GETH_L1_TEST_URL;
+    default:
+      return process.env.GETH_L1_URL;
+  }
+}
 
-  const provider = new ethers.providers.StaticJsonRpcProvider(
-    providerRPC.storknet.rpc,
-    {
-      chainId: providerRPC.storknet.chainId,
-      name: providerRPC.storknet.name,
-    }
-  );
-
-  const accountFrom = {
-    privateKey: process.env.PRIVATE_KEY_OWNER || "",
-  };
-
-  const wallet = new ethers.Wallet(accountFrom.privateKey, provider);
-
-  return wallet;
+function getChainId(networkName: string): number {
+  switch (networkName) {
+    case "l1":
+      return Number(process.env.GETH_L1_CHAINID);
+    case "storknet":
+      return Number(process.env.STORKNET_CHAINID);
+    case "l1-test":
+      return Number(process.env.GETH_L1_TEST_CHAINID);
+    default:
+      return Number(process.env.GETH_L1_CHAINID);
+  }
 }

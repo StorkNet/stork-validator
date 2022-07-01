@@ -3,18 +3,21 @@
 import { Contract, ethers, Wallet } from "ethers";
 
 import { getContract } from "../helper/helperContractAddress";
-import { getL1Wallet } from "../helper/helperSigner";
+import { getWallet } from "../helper/helperSigner";
+require("dotenv").config()
 
 export function HandleRequest(
   reqId: number,
   clientAddress: string,
   fallbackFunction: string,
+  fallbackNetwork: string,
+  fallbackContract: string,
   data: string,
   ids: number,
   zkProof: string,
   key: number,
 ) {
-  const L1wallet: Wallet = getL1Wallet();
+  const L1wallet: Wallet = getWallet("l1");
 
   const CONTRACT_ADDRESS: string = getContract("MultiSigVerification");
 
